@@ -65,9 +65,5 @@ It supports basic banking operations such as creating accounts, deposits, withdr
 | amount    | DOUBLE    | Transaction Amount      |
 | timestamp | DATETIME  | Transaction Date & Time |
 
----
-
-## 📜 License
-This project is licensed under the **MIT License**.
 
 ---
