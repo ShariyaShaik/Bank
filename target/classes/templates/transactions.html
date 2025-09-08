@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transaction History - Banking System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/banking/dashboard">Banking System</a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="/user/logout">Logout</a>
+                <a class="nav-link" href="/banking/dashboard">Back to Dashboard</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>User Profile</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-sm-3">
+                                <strong>Full Name:</strong>
+                            </div>
+                            <div class="col-sm-9" th:text="${user.fullName}"></div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-sm-3">
+                                <strong>Username:</strong>
+                            </div>
+                            <div class="col-sm-9" th:text="${user.username}"></div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-sm-3">
+                                <strong>Email:</strong>
+                            </div>
+                            <div class="col-sm-9" th:text="${user.email}"></div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-sm-3">
+                                <strong>Phone:</strong>
+                            </div>
+                            <div class="col-sm-9" th:text="${user.phoneNumber ?: 'Not provided'}"></div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-sm-3">
+                                <strong>Member Since:</strong>
+                            </div>
+                            <div class="col-sm-9" th:text="${#temporals.format(user.createdAt, 'dd-MM-yyyy')}"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Transaction History</h5>
+                        <p class="mb-0">Account: <span th:text="${account.accountNumber}"></span> 
+                           | Balance: $<span th:text="${#numbers.formatDecimal(account.balance, 1, 2)}"></span></p>
+                    </div>
+                    <div class="card-body">
+                        <div th:if="${#lists.isEmpty(transactions)}" class="text-center text-muted">
+                            <p>No transactions found for this account.</p>
+                        </div>
+                        
+                        <div th:unless="${#lists.isEmpty(transactions)}">
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Type</th>
+                                            <th>Amount</th>
+                                            <th>From Account</th>
+                                            <th>To Account</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:each="transaction : ${transactions}">
+                                            <td th:text="${#temporals.format(transaction.transactionDate, 'dd-MM-yyyy HH:mm')}"></td>
+                                            <td>
+                                                <span th:switch="${transaction.transactionType}">
+                                                    <span th:case="'DEPOSIT'" class="badge bg-success">Deposit</span>
+                                                    <span th:case="'WITHDRAWAL'" class="badge bg-warning">Withdrawal</span>
+                                                    <span th:case="'TRANSFER'" class="badge bg-info">Transfer</span>
+                                                </span>
+                                            </td>
+                                            <td>$<span th:text="${#numbers.formatDecimal(transaction.amount, 1, 2)}"></span></td>
+                                            <td th:text="${transaction.fromAccount?.accountNumber ?: '-'}"></td>
+                                            <td th:text="${transaction.toAccount?.accountNumber ?: '-'}"></td>
+                                            <td th:text="${transaction.description ?: '-'}"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
